@@ -1,0 +1,32 @@
+{
+  project(fullPath: "psd/integration-suite") {
+    name
+    pipelines(first: 10) {
+      edges {
+        node {
+          id
+          source
+          createdAt
+          status
+          duration
+          commitPath
+          ref
+          jobs {
+            edges {
+              node {
+                id
+                name
+                status
+                kind
+                webPath
+                trace {
+                  htmlSummary
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
