@@ -1,10 +1,14 @@
-import requests
 import re
+from collections import namedtuple
+
+import requests
 
 GITLAB_URL = "https://gitlab.internal.sanger.ac.uk/"
 
 with open("gitlab.token") as f:
     GRAPHQL_TOKEN = f.read().strip()
+
+FailedTest = namedtuple("FailedTest", ["ref", "comment"])
 
 
 def query_pipelines():
@@ -45,20 +49,15 @@ def extract_failed_tests(summary):
     """
     regex = r"Failed examples:(.*)Randomized with seed"
     match = re.search(regex, summary, re.DOTALL)
-    result = match.group(1).strip() if match else ""
-    # remove <br/> tags
-    return result.replace("<br/>", "")
+    return match.group(1).strip().split("<br/>") if match else []
 
 
-def failed_tests_html(pipeline):
-    return (
-        "<ul class='list-disc'>"
-        + "".join(
-            [
-                f"<li>{extract_failed_tests(job['trace']['htmlSummary'])}</li>"
-                for job in pipeline["jobs"]
-                if job["trace"] and "Failed examples:" in job["trace"]["htmlSummary"]
-            ]
-        )
-        + "</ul>"
-    )
+def failed_tests(pipeline):
+    failed_tests = []
+    for job in pipeline["jobs"]:
+        if job["trace"] and "Failed examples:" in job["trace"]["htmlSummary"]:
+            for test in extract_failed_tests(job["trace"]["htmlSummary"]):
+                if test:
+                    failed_tests.append(FailedTest(*(test.split(" # "))))
+
+    return failed_tests

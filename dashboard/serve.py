@@ -21,7 +21,7 @@ def index():
             # extract the number from the id gid://gitlab/Ci::Pipeline/286655
             pipeline["id"] = pipeline["id"].split("/")[-1]
             pipeline["commit_abbr"] = pipeline["commitPath"].split("/")[-1][:6]
-            pipeline["failed_tests_html"] = gitlab.failed_tests_html(pipeline)
+            pipeline["failed_tests"] = gitlab.failed_tests(pipeline)
             versions = db.get_versions(pipeline["id"])
             pipeline["versions"] = versions
     except requests.exceptions.ConnectionError as e:
