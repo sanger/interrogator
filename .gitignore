@@ -1,8 +1,5 @@
 # Python
 __pycache__/
 
-# Database
-*.sqlite*
-
 # Tokens
 *.token

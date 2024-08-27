@@ -5,7 +5,6 @@ name = "pypi"
 
 [packages]
 flask = "~=3.0"
-lxml = "~=5.2"
 
 [dev-packages]
 djlint = "*"

@@ -1,16 +1,8 @@
-from pathlib import Path
-
-import db
 import gitlab
 import requests
-from applications import fetch_version
 from flask import Flask, render_template
 
 app = Flask(__name__)
-app.config.from_mapping(
-    DATABASE=Path(app.root_path) / "dashboard.sqlite",
-)
-db.init_app(app)
 
 
 @app.route("/")
@@ -24,12 +16,11 @@ def index():
             pipeline["failed_tests"] = gitlab.failed_tests(pipeline)
 
             gitlab_versions = gitlab.application_versions(pipeline) or {}
-            db_versions = db.get_versions(pipeline["id"]) or {}
             default_versions = {
                 "sequencescape_version": "&lt;unknown&gt;",
                 "limber_version": "&lt;unknown&gt;",
             }
-            versions = {**default_versions, **db_versions, **gitlab_versions}
+            versions = {**default_versions, **gitlab_versions}
             pipeline["versions"] = versions
     except requests.exceptions.ConnectionError as e:
         # could not connect to gitlab instance, most likely not on the VPN
@@ -39,20 +30,4 @@ def index():
     return render_template(
         "index.jinja",
         pipelines=pipelines,
-    )
-
-
-@app.route("/new-pipeline/<int:pipeline_id>", methods=["GET"])
-def new_pipeline(pipeline_id):
-    lb_version = fetch_version(
-        "https://uat.limber.psd.sanger.ac.uk/", ".version-info .container"
-    )
-    ss_version = fetch_version(
-        "https://uat.sequencescape.psd.sanger.ac.uk/", ".deployment-info"
-    )
-
-    db.add_versions(pipeline_id, ss_version, lb_version)
-
-    return "Captured application versions for pipeline {}\nSequenceScape: {}\nLimber: {}".format(
-        pipeline_id, ss_version[0], lb_version[0]
     )
