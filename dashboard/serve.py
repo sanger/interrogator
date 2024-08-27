@@ -17,8 +17,8 @@ def index():
 
             gitlab_versions = gitlab.application_versions(pipeline) or {}
             default_versions = {
-                "sequencescape_version": "&lt;unknown&gt;",
-                "limber_version": "&lt;unknown&gt;",
+                "sequencescape": "&lt;unknown&gt;",
+                "limber": "&lt;unknown&gt;",
             }
             versions = {**default_versions, **gitlab_versions}
             pipeline["versions"] = versions

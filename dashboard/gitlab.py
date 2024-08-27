@@ -84,7 +84,7 @@ def extract_application_versions(html_summary):
             for line in match.group(1).strip().split("<br/>"):
                 if line.startswith("  "):
                     app, version = line.strip().split(" ")
-                    versions[app] = version
+                    versions[app.lower()] = version
 
     return versions
 
@@ -101,12 +101,5 @@ def application_versions(pipeline):
                     versions[key] = "version changed during test run"
                 else:
                     versions[key] = new_value
-
-    if versions == {}:
-        return None
-
-    # add keys for templates
-    versions["sequencescape_version"] = versions.get("Sequencescape")
-    versions["limber_version"] = versions.get("Limber")
 
     return versions
