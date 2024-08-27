@@ -1,7 +1,7 @@
 {
   project(fullPath: "psd/integration-suite") {
     name
-    pipelines(first: 10) {
+    pipelines(first: 20) {
       edges {
         node {
           id
