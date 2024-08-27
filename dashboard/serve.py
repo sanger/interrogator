@@ -22,9 +22,14 @@ def index():
             pipeline["id"] = pipeline["id"].split("/")[-1]
             pipeline["commit_abbr"] = pipeline["commitPath"].split("/")[-1][:6]
             pipeline["failed_tests"] = gitlab.failed_tests(pipeline)
-            versions = gitlab.application_versions(pipeline)
-            if not versions:
-                versions = db.get_versions(pipeline["id"])
+
+            gitlab_versions = gitlab.application_versions(pipeline) or {}
+            db_versions = db.get_versions(pipeline["id"]) or {}
+            default_versions = {
+                "sequencescape_version": "&lt;unknown&gt;",
+                "limber_version": "&lt;unknown&gt;",
+            }
+            versions = {**default_versions, **db_versions, **gitlab_versions}
             pipeline["versions"] = versions
     except requests.exceptions.ConnectionError as e:
         # could not connect to gitlab instance, most likely not on the VPN

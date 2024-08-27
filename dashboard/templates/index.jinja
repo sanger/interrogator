@@ -70,14 +70,14 @@
                   <code title="{{ pipeline.ref }}@{{ pipeline.commit_abbr }}">{{ pipeline.ref | truncate(20, True) }}@{{ pipeline.commit_abbr }}</code>
                 </span>
                 <span class="col-3">
-                  <a href="{{ pipeline.versions.sequencescape_url }}">
-                    <code title="{{ pipeline.versions.sequencescape_version }}">{{ pipeline.versions.sequencescape_version | truncate(27, True) }}</code>
-                  </a>
+                  <span class="circle me-1"
+                        style="background-color: #{{ pipeline.versions.sequencescape_version[-6:] }}"></span>
+                  <code title="{{ pipeline.versions.sequencescape_version }}">{{ pipeline.versions.sequencescape_version | truncate(27, True) }}</code>
                 </span>
                 <span class="col-3">
-                  <a href="{{ pipeline.versions.limber_url }}">
-                    <code title="{{ pipeline.versions.limber_version }}">{{ pipeline.versions.limber_version | truncate(27, True) }}</code>
-                  </a>
+                  <span class="circle me-1"
+                        style="background-color: #{{ pipeline.versions.limber_version[-6:] }}"></span>
+                  <code title="{{ pipeline.versions.limber_version }}">{{ pipeline.versions.limber_version | truncate(27, True) }}</code>
                 </span>
                 <span class="col-1">
                   <span class="status-{{ pipeline.status | lower }}"><strong>{{ pipeline.status | title }}

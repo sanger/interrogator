@@ -105,8 +105,8 @@ def application_versions(pipeline):
     if versions == {}:
         return None
 
-    # convert dictionary to object with attributes sequencescape_version and limber_version
-    versions = namedtuple(
-        "ApplicationVersions", "sequencescape_version limber_version"
-    )(versions.get("Sequencescape"), versions.get("Limber"))
+    # add keys for templates
+    versions["sequencescape_version"] = versions.get("Sequencescape")
+    versions["limber_version"] = versions.get("Limber")
+
     return versions
