@@ -34,7 +34,7 @@ convention = "pep257"
 "**/*/__init__.py" = ["D"]
 
 [tool.djlint]
-profile="django"
+profile="jinja"
 # H030: Ignore missing meta description
 # H031: Ignore missing meta keywords
 # H006: Ignore missing image dimensions
