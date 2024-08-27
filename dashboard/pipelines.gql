@@ -20,7 +20,7 @@
                 kind
                 webPath
                 trace {
-                  htmlSummary
+                  htmlSummary(lastLines: 35)
                 }
               }
             }
