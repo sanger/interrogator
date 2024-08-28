@@ -1,5 +1,6 @@
 import re
 from collections import namedtuple
+from string import Template
 
 import requests
 
@@ -11,25 +12,36 @@ with open("gitlab.token") as f:
 FailedTest = namedtuple("FailedTest", ["ref", "comment"])
 
 
-def query_pipelines():
+def query_pipelines(first=20, source=None, status=None):
     with open("dashboard/pipelines.gql") as f:
+        template = Template(f.read())
+        pipelines_filter = f"first: {first}"
+        if source and source != "all":
+            pipelines_filter += f', source: "{source}"'
+        if status and status != "all":
+            pipelines_filter += f", status: {status.upper()}"
+        query = template.substitute(pipelines_filter=pipelines_filter)
+
         headers = {
             "Authorization": f"Bearer {GRAPHQL_TOKEN}",
             "Content-Type": "application/json",
         }
-        query = f.read()
         response = requests.post(
             GITLAB_URL + "api/graphql", headers=headers, json={"query": query}
         )
 
         # collapse edges and nodes
-        pipelines = [
-            {
-                **edge["node"],
-                "jobs": [job["node"] for job in edge["node"]["jobs"]["edges"]],
-            }
-            for edge in response.json()["data"]["project"]["pipelines"]["edges"]
-        ]
+        try:
+            pipelines = [
+                {
+                    **edge["node"],
+                    "jobs": [job["node"] for job in edge["node"]["jobs"]["edges"]],
+                }
+                for edge in response.json()["data"]["project"]["pipelines"]["edges"]
+            ]
+        except KeyError:
+            # no pipelines found
+            pipelines = []
 
         return pipelines
 

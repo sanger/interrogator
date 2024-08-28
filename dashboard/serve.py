@@ -4,7 +4,7 @@ import db
 import gitlab
 import requests
 from applications import fetch_version
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 
 app = Flask(__name__)
 app.config.from_mapping(
@@ -15,8 +15,9 @@ db.init_app(app)
 
 @app.route("/")
 def index():
+    filters = request.args  # get the query string parameters as the filters
     try:
-        pipelines = gitlab.query_pipelines()
+        pipelines = gitlab.query_pipelines(**filters)
         for pipeline in pipelines:
             # extract the number from the id gid://gitlab/Ci::Pipeline/286655
             pipeline["id"] = pipeline["id"].split("/")[-1]
