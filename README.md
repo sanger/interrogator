@@ -1,3 +1,5 @@
+[![python](https://img.shields.io/badge/Python-3.10-blue?style=for-the-badge&logo=python&logoColor=FFD43B)](https://docs.python.org/3.10/)
+
 # iSuite-Dashboard
 
 A visualisation tool for Integration Suite test runs.
@@ -19,4 +21,5 @@ A visualisation tool for Integration Suite test runs.
 
 ```sh
 ruff check --fix **/*.py
+djlint dashboard/templates/* --reformat
 ```
