@@ -22,6 +22,7 @@ def index():
             # extract the number from the id gid://gitlab/Ci::Pipeline/286655
             pipeline["id"] = pipeline["id"].split("/")[-1]
             pipeline["commit_abbr"] = pipeline["commitPath"].split("/")[-1][:6]
+            pipeline["overall_status"] = gitlab.pipeline_status(pipeline)
             pipeline["failed_tests"] = gitlab.failed_tests(pipeline)
 
             gitlab_versions = gitlab.application_versions(pipeline) or {}

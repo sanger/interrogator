@@ -103,11 +103,10 @@
                   <code title="{{ pipeline.versions.limber_version }}">{{ pipeline.versions.limber_version | truncate(27, True) }}</code>
                 </span>
                 <span class="col-1">
-                  <span class="status-{{ pipeline.status | lower }}"><strong>{{ pipeline.status | title }}
-                    {% if pipeline.status.lower() =='failed' %}- {{ pipeline.failed_tests | length }}{% endif %}
-                  </strong>
+                  <span class="status-{{ pipeline.status | lower }}">
+                    <strong>{{ pipeline.overall_status | title }}</strong>
+                  </span>
                 </span>
-              </span>
             </div>
           </div>
           {% if pipeline.failed_tests %}

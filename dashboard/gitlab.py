@@ -46,6 +46,30 @@ def query_pipelines(first=20, source=None, status=None):
         return pipelines
 
 
+def is_lint(pipeline):
+    """Given a pipeline, return True if it is a lint pipeline."""
+    for job in pipeline["jobs"]:
+        if job["name"] == "job_lint":
+            return True
+    return False
+
+
+def pipeline_build_status(pipeline):
+    """Given a pipeline, report the status of the build."""
+    for job in pipeline["jobs"]:
+        if job["name"] == "job_build":
+            return job["status"]
+    return "No build"
+
+
+def pipeline_cleanup_status(pipeline):
+    """Given a pipeline, report the status of the cleanup job."""
+    for job in pipeline["jobs"]:
+        if job["name"] == "job_cleanup":
+            return job["status"]
+    return "No cleanup"
+
+
 def extract_failed_tests(summary):
     """
     Extract the failed tests from the summary.
@@ -73,6 +97,22 @@ def failed_tests(pipeline):
                     failed_tests.append(FailedTest(*(test[6:].split(" # "))))
 
     return failed_tests
+
+
+def pipeline_status(pipeline):
+    """Given a pipeline, report the status of the pipeline taking the job stages into account."""
+    if is_lint(pipeline):
+        return f"lint {pipeline['status']}"
+    if pipeline["status"].lower() == "failed":
+        if pipeline_build_status(pipeline).lower() == "failed":
+            return "build failed"
+        elif any(failed_tests(pipeline)):
+            n = len(failed_tests(pipeline))
+            return f"tests failed ({n})"
+        elif pipeline_cleanup_status(pipeline).lower() == "failed":
+            return "cleanup failed"
+
+    return pipeline["status"]
 
 
 def extract_application_versions(html_summary):
