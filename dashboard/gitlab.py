@@ -76,16 +76,15 @@ def extract_failed_tests(summary):
 
     Given:
         Failed examples:
+        rspec ./spec/limber/bespoke_pcr_pipeline_spec.rb:31 # Following the Bespoke PCR pipeline 96 well
+        rspec ./spec/limber/bespoke_chromium_3pv3_pipeline_spec.rb:38 # Following the Bespoke Chromium Aggregation and 3pv3 pipelines 96 well
+        Randomized with seed 59715
 
-        rspec ./spec/limber/scrna_core_spec.rb:140 # Following the high throughput scRNA Core Cell Extraction pipeline scRNA Core entry point 1 - LRC Blood Vac tubes Blood Banking
-
-        Randomized with seed 26337
-
-    Return lines after "Failed examples:" and before "Randomized with seed"
+    Return lines that start with "rspec ./" and end with "<".
     """
-    regex = r"Failed examples:(.*)Randomized with seed"
-    match = re.search(regex, summary, re.DOTALL)
-    return match.group(1).strip().split("<br/>") if match else []
+    regex = r"(<br\/>rspec \.\/[^<]+)"
+    matches = re.findall(regex, summary, re.DOTALL)
+    return "".join(matches).split("<br/>") if matches else []
 
 
 def failed_tests(pipeline):
