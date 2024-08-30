@@ -50,13 +50,7 @@
         {% if flaky_tests %}
           <div class="row">
             <div class="alert alert-warning" role="alert">
-              <ul>
-                {% for flaky_test in flaky_tests | sort(attribute='ref') %}
-                  <li>
-                    Flaky test: {{ flaky_test.ref }} <span class="float-end">{{ flaky_test.int_suite_version }} {{ flaky_test.sequencescape_version }} {{ flaky_test.limber_version }}</span>
-                  </li>
-                {% endfor %}
-              </ul>
+              Flaky tests detected, please check the summaries below for more details.
             </div>
           </div>
         {% endif %}
@@ -126,6 +120,7 @@
               <ul class='list-group list-group-flush'>
                 {% for failed_test in  pipeline.failed_tests %}
                   <li class='list-group-item py-1 small'>
+                    {% if failed_test.is_flaky %}<span class="badge bg-warning text-dark">Flaky</span>{% endif %}
                     <span class="font-monospace">{{ failed_test.ref }}</span><span class="ms-2 text-secondary">{{ failed_test.comment }}</span>
                   </li>
                 {% endfor %}

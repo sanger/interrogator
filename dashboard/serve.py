@@ -19,6 +19,7 @@ db.init_app(app)
 
 @app.route("/")
 def index():
+    # TODO: Refactor this function
     filters = request.args  # get the query string parameters as the filters
     try:
         pipelines = gitlab.query_pipelines(**filters)
@@ -84,7 +85,10 @@ def index():
         # create a list of sets of failed tests from each pipeline in the group
         failed_test_sets = [set(p["failed_tests"]) for p in pipeline_group]
         # find the difference of the failed tests
-        flaky_tests.extend(set.difference(*failed_test_sets))
+        flaky_test_set = set.difference(*failed_test_sets)
+        for flaky_test in flaky_test_set:
+            flaky_test.is_flaky = True
+        flaky_tests.extend(flaky_test_set)
 
     return render_template(
         "index.jinja",

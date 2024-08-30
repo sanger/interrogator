@@ -20,6 +20,7 @@ class FailedTest:
     int_suite_version: Optional[str] = field(default=None)
     sequencescape_version: Optional[str] = field(default=None)
     limber_version: Optional[str] = field(default=None)
+    is_flaky: bool = field(default=False)
 
 
 def query_pipelines(first=20, source=None, status=None):
