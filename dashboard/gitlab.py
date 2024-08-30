@@ -1,6 +1,7 @@
 import re
-from collections import namedtuple
+from dataclasses import dataclass, field
 from string import Template
+from typing import Optional
 
 import requests
 
@@ -9,7 +10,16 @@ GITLAB_URL = "https://gitlab.internal.sanger.ac.uk/"
 with open("gitlab.token") as f:
     GRAPHQL_TOKEN = f.read().strip()
 
-FailedTest = namedtuple("FailedTest", ["ref", "comment"])
+
+@dataclass(unsafe_hash=True)
+class FailedTest:
+    """An object to represent a failed test and related data."""
+
+    ref: str
+    comment: str
+    int_suite_version: Optional[str] = field(default=None)
+    sequencescape_version: Optional[str] = field(default=None)
+    limber_version: Optional[str] = field(default=None)
 
 
 def query_pipelines(first=20, source=None, status=None):
@@ -68,6 +78,14 @@ def pipeline_cleanup_status(pipeline):
         if job["name"] == "job_cleanup":
             return job["status"]
     return "No cleanup"
+
+
+def is_tested(pipeline):
+    """Given a pipeline, return True if it is a tested pipeline."""
+    for job in pipeline["jobs"]:
+        if job["name"].startswith("job_test"):
+            return True
+    return False
 
 
 def extract_failed_tests(summary):

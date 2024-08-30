@@ -47,6 +47,19 @@
     <main class="bg-white p-8 rounded-4 shadow-lg">
       <div class="container p-4">
         <h1>Integration Suite Runs</h1>
+        {% if flaky_tests %}
+          <div class="row">
+            <div class="alert alert-warning" role="alert">
+              <ul>
+                {% for flaky_test in flaky_tests | sort(attribute='ref') %}
+                  <li>
+                    Flaky test: {{ flaky_test.ref }} <span class="float-end">{{ flaky_test.int_suite_version }} {{ flaky_test.sequencescape_version }} {{ flaky_test.limber_version }}</span>
+                  </li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+        {% endif %}
         <form id="filters" action="{{ url_for("index") }}" method="get">
           <div class="d-flex flex-wrap justify-content-end align-items-center mb-2">
             <div class="form-floating mt-2 ms-2">
@@ -90,7 +103,7 @@
                 <span class="col-2">
                   <span class="circle me-1"
                         style="background-color: #{{ pipeline.commit_abbr }}"></span>
-                  <code title="{{ pipeline.ref }}@{{ pipeline.commit_abbr }}">{{ pipeline.ref | truncate(20, True) }}@{{ pipeline.commit_abbr }}</code>
+                  <code title="{{ int_suite_version }}">{{ pipeline.ref | truncate(20, True) }}@{{ pipeline.commit_abbr }}</code>
                 </span>
                 <span class="col-3">
                   <span class="circle me-1"
