@@ -37,9 +37,14 @@ def query_pipelines(first=20, source=None, status=None):
             "Authorization": f"Bearer {GRAPHQL_TOKEN}",
             "Content-Type": "application/json",
         }
-        response = requests.post(
-            GITLAB_URL + "api/graphql", headers=headers, json={"query": query}
-        )
+        try:
+            response = requests.post(
+                GITLAB_URL + "api/graphql", headers=headers, json={"query": query}
+            )
+        except requests.exceptions.ConnectionError as e:
+            # could not connect to gitlab instance, most likely not on the VPN
+            print(e)
+            pipelines = []
 
         # collapse edges and nodes
         try:
