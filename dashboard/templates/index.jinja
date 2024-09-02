@@ -52,7 +52,9 @@
   <body class="body-bg container-xl p-4">
     <main class="bg-white p-8 rounded-4 shadow-lg">
       <div class="container p-4">
-        <h1>Integration Suite Runs</h1>
+        <a href="{{ url_for("index") }}" class="navbar-brand">
+          <h1>Integration Suite Runs</h1>
+        </a>
         {% if flaky_tests %}
           <div class="row">
             <div class="alert alert-warning" role="alert">
