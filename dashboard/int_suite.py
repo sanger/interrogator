@@ -50,6 +50,7 @@ def compile_pipelines(**filters):
         pipeline["overall_status"] = gitlab.pipeline_status(pipeline)
         pipeline["is_tested"] = gitlab.is_tested(pipeline)
         pipeline["failed_tests"] = gitlab.failed_tests(pipeline)
+        pipeline["job_times"] = gitlab.job_times(pipeline)
 
         # get the application versions
         gitlab_versions = gitlab.application_versions(pipeline) or {}

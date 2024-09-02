@@ -19,6 +19,7 @@
                 status
                 kind
                 webPath
+                duration
                 trace {
                   htmlSummary(lastLines: 35)
                 }

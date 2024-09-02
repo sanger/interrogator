@@ -122,6 +122,22 @@ def failed_tests(pipeline):
     return failed_tests
 
 
+def format_duration(duration):
+    """Given a duration in seconds, return a human readable string."""
+    if duration is None:
+        return "unknown"
+    return f"{duration // 60}m {duration % 60}s"
+
+
+def job_times(pipeline):
+    """Given a pipeline, return the time taken in for each job."""
+    job_times = []
+    for job in reversed(pipeline["jobs"]):
+        job_times.append(f"{job['name']}: {format_duration(job['duration'])}")
+
+    return "\n".join(job_times)
+
+
 def pipeline_status(pipeline):
     """Given a pipeline, report the status of the pipeline taking the job stages into account."""
     if is_lint(pipeline):

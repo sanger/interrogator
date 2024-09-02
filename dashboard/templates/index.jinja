@@ -103,8 +103,11 @@
                   {{ pipeline.createdAt | replace('T', ' ') | truncate(16, True, '') }}
                   <a href="https://gitlab.internal.sanger.ac.uk/psd/integration-suite/-/pipelines/{{ pipeline.id }}"
                      class="underline ms-3">{{ pipeline.id }}</a>
-                  <span class="status-{{ pipeline.status | lower }} float-end">
+                  <span class="status-{{ pipeline.status | lower }} float-end ms-3">
                     <strong>{{ pipeline.overall_status | title }}</strong>
+                  </span>
+                  <span class="text-secondary float-end" title="{{ pipeline.job_times }}">
+                    {{ (pipeline.duration // 60 + 1) if pipeline.duration is not none else 'unknown' }} mins
                   </span>
                 </span>
               </div>
