@@ -19,6 +19,12 @@
         background-color: #9921e8;
         background-image: linear-gradient(315deg, #9921e8 0%, #5f72be 74%);
       }
+      .application-label {
+        display: inline-block;
+        width: 1.4em;
+        font-size: 0.9em;
+        font-weight: bold;
+      }
       .circle {
         display: inline-block;
         width: 0.7em;
@@ -77,42 +83,37 @@
             <button type="submit" class="btn btn-outline-primary mt-2 ms-2">Filter</button>
           </div>
         </form>
-        <div class="row mx-2">
-          <span class="col-2">Created At</span>
-          <span class="col-1">Pipeline</span>
-          <span class="col-2">Int-Suite branch</span>
-          <span class="col-3">Sequencescape Branch</span>
-          <span class="col-3">Limber Branch</span>
-          <span class="col-1">Result</span>
-        </div>
         {% for pipeline in pipelines %}
           <div class="card mt-3">
             <div class="card-header">
               <div class="row">
-                <span class="col-2">{{ pipeline.createdAt | replace('T', ' ') | truncate(16, True, '') }}</span>
-                <span class="col-1">
+                <span class="col-12">
+                  {{ pipeline.createdAt | replace('T', ' ') | truncate(16, True, '') }}
                   <a href="https://gitlab.internal.sanger.ac.uk/psd/integration-suite/-/pipelines/{{ pipeline.id }}"
-                     class="underline">{{ pipeline.id }}</a>
-                </span>
-                <span class="col-2">
-                  <span class="circle me-1"
-                        style="background-color: #{{ pipeline.commit_abbr }}"></span>
-                  <code title="{{ int_suite_version }}">{{ pipeline.ref | truncate(20, True) }}@{{ pipeline.commit_abbr }}</code>
-                </span>
-                <span class="col-3">
-                  <span class="circle me-1"
-                        style="background-color: #{{ pipeline.versions.sequencescape_version[-6:] }}"></span>
-                  <code title="{{ pipeline.versions.sequencescape_version }}">{{ pipeline.versions.sequencescape_version | truncate(27, True) }}</code>
-                </span>
-                <span class="col-3">
-                  <span class="circle me-1"
-                        style="background-color: #{{ pipeline.versions.limber_version[-6:] }}"></span>
-                  <code title="{{ pipeline.versions.limber_version }}">{{ pipeline.versions.limber_version | truncate(27, True) }}</code>
-                </span>
-                <span class="col-1">
-                  <span class="status-{{ pipeline.status | lower }}">
+                     class="underline ms-3">{{ pipeline.id }}</a>
+                  <span class="status-{{ pipeline.status | lower }} float-end">
                     <strong>{{ pipeline.overall_status | title }}</strong>
                   </span>
+                </span>
+              </div>
+              <div class="row">
+                <span class="col-12 col-lg-3 offset-lg-1">
+                  <span class="circle me-1"
+                        style="background-color: #{{ pipeline.commit_abbr }}"></span>
+                  <span class="application-label" title="Integration Suite">IS</span>
+                  <code>{{ pipeline.ref }}@{{ pipeline.commit_abbr }}</code>
+                </span>
+                <span class="col-12 col-lg-4">
+                  <span class="circle me-1"
+                        style="background-color: #{{ pipeline.versions.sequencescape_version[-6:] }}"></span>
+                  <span class="application-label" title="Sequencescape">SS</span>
+                  <code>{{ pipeline.versions.sequencescape_version }}</code>
+                </span>
+                <span class="col-12 col-lg-4">
+                  <span class="circle me-1"
+                        style="background-color: #{{ pipeline.versions.limber_version[-6:] }}"></span>
+                  <span class="application-label" title="Limber">LB</span>
+                  <code>{{ pipeline.versions.limber_version }}</code>
                 </span>
               </div>
             </div>
