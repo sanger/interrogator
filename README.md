@@ -15,5 +15,6 @@ A visualisation tool for Integration Suite test runs.
 ## Linting
 
 ```sh
- bundle exec rubocop -a
+bundle exec rubocop -a
+bundle exec erblint --lint-all -a
 ```

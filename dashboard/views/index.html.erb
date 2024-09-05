@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon"
           href="<%= url('/favicon.ico') %>"
-          type="image/x-icon" />
+          type="image/x-icon">
     <link rel="icon"
           href="<%= url('/favicon.ico') %>"
-          type="image/x-icon" />
+          type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
           rel="stylesheet"
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
@@ -124,19 +124,19 @@
                 <div class="row">
                   <span class="col-12 col-lg-3 offset-lg-1">
                     <span class="circle me-1"
-                          style="background-color: #<%= pipeline['versions']['int_suite'][-6..-1] %>"></span>
+                          style="background-color: #<%= pipeline['versions']['int_suite'][-6..] %>"></span>
                     <span class="application-label" title="Integration Suite">IS</span>
                     <code><%= pipeline['versions']['int_suite'] %></code>
                   </span>
                   <span class="col-12 col-lg-4">
                     <span class="circle me-1"
-                          style="background-color: #<%= pipeline['versions']['sequencescape'][-6..-1] %>"></span>
+                          style="background-color: #<%= pipeline['versions']['sequencescape'][-6..] %>"></span>
                     <span class="application-label" title="Sequencescape">SS</span>
                     <code><%= pipeline['versions']['sequencescape'] %></code>
                   </span>
                   <span class="col-12 col-lg-4">
                     <span class="circle me-1"
-                          style="background-color: #<%= pipeline['versions']['limber'][-6..-1] %>"></span>
+                          style="background-color: #<%= pipeline['versions']['limber'][-6..] %>"></span>
                     <span class="application-label" title="Limber">LB</span>
                     <code><%= pipeline['versions']['limber'] %></code>
                   </span>
