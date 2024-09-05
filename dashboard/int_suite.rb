@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
+require 'cgi'
 require 'set'
 require_relative 'gitlab'
 
-UNKNOWN_VERSION = '<unknown>'
+UNKNOWN_VERSION = CGI.escapeHTML('<unknown>')
 
 module IntSuite
   def self.group_pipelines(pipelines)
