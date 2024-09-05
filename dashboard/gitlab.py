@@ -174,7 +174,8 @@ def extract_application_versions(html_summary):
         if match:
             for line in match.group(1).strip().split("<br/>"):
                 if line.startswith("  "):
-                    app, version = line.strip().split(" ")
+                    parts = line.strip().split(" ")
+                    app, version = parts[0], " ".join(parts[1:])
                     versions[app] = version
 
     return versions
