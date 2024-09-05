@@ -1,5 +1,7 @@
 import re
-from collections import namedtuple
+from dataclasses import dataclass, field
+from string import Template
+from typing import Optional
 
 import requests
 
@@ -8,30 +10,88 @@ GITLAB_URL = "https://gitlab.internal.sanger.ac.uk/"
 with open("gitlab.token") as f:
     GRAPHQL_TOKEN = f.read().strip()
 
-FailedTest = namedtuple("FailedTest", ["ref", "comment"])
+
+@dataclass(unsafe_hash=True)
+class FailedTest:
+    """An object to represent a failed test and related data."""
+
+    ref: str
+    comment: str
+    int_suite_version: Optional[str] = field(default=None)
+    sequencescape_version: Optional[str] = field(default=None)
+    limber_version: Optional[str] = field(default=None)
+    is_flaky: bool = field(default=False)
 
 
-def query_pipelines():
+def query_pipelines(first=20, source=None, status=None):
     with open("dashboard/pipelines.gql") as f:
+        template = Template(f.read())
+        pipelines_filter = f"first: {first}"
+        if source and source != "all":
+            pipelines_filter += f', source: "{source}"'
+        if status and status != "all":
+            pipelines_filter += f", status: {status.upper()}"
+        query = template.substitute(pipelines_filter=pipelines_filter)
+
         headers = {
             "Authorization": f"Bearer {GRAPHQL_TOKEN}",
             "Content-Type": "application/json",
         }
-        query = f.read()
-        response = requests.post(
-            GITLAB_URL + "api/graphql", headers=headers, json={"query": query}
-        )
+        try:
+            response = requests.post(
+                GITLAB_URL + "api/graphql", headers=headers, json={"query": query}
+            )
+        except requests.exceptions.ConnectionError as e:
+            # could not connect to gitlab instance, most likely not on the VPN
+            print(e)
+            pipelines = []
 
         # collapse edges and nodes
-        pipelines = [
-            {
-                **edge["node"],
-                "jobs": [job["node"] for job in edge["node"]["jobs"]["edges"]],
-            }
-            for edge in response.json()["data"]["project"]["pipelines"]["edges"]
-        ]
+        try:
+            pipelines = [
+                {
+                    **edge["node"],
+                    "jobs": [job["node"] for job in edge["node"]["jobs"]["edges"]],
+                }
+                for edge in response.json()["data"]["project"]["pipelines"]["edges"]
+            ]
+        except KeyError:
+            # no pipelines found
+            pipelines = []
 
         return pipelines
+
+
+def is_lint(pipeline):
+    """Given a pipeline, return True if it is a lint pipeline."""
+    for job in pipeline["jobs"]:
+        if job["name"] == "job_lint":
+            return True
+    return False
+
+
+def pipeline_build_status(pipeline):
+    """Given a pipeline, report the status of the build."""
+    for job in pipeline["jobs"]:
+        if job["name"] == "job_build":
+            return job["status"]
+    return "No build"
+
+
+def pipeline_cleanup_status(pipeline):
+    """Given a pipeline, report the status of the cleanup job."""
+    for job in pipeline["jobs"]:
+        if job["name"] == "job_cleanup":
+            return job["status"]
+    return "No cleanup"
+
+
+def is_tested(pipeline):
+    """Given a pipeline, return True if it is a tested pipeline."""
+    for job in pipeline["jobs"]:
+        if job["name"].startswith("job_test"):
+            return True
+    return False
 
 
 def extract_failed_tests(summary):
@@ -40,16 +100,15 @@ def extract_failed_tests(summary):
 
     Given:
         Failed examples:
+        rspec ./spec/limber/bespoke_pcr_pipeline_spec.rb:31 # Following the Bespoke PCR pipeline 96 well
+        rspec ./spec/limber/bespoke_chromium_3pv3_pipeline_spec.rb:38 # Following the Bespoke Chromium Aggregation and 3pv3 pipelines 96 well
+        Randomized with seed 59715
 
-        rspec ./spec/limber/scrna_core_spec.rb:140 # Following the high throughput scRNA Core Cell Extraction pipeline scRNA Core entry point 1 - LRC Blood Vac tubes Blood Banking
-
-        Randomized with seed 26337
-
-    Return lines after "Failed examples:" and before "Randomized with seed"
+    Return lines that start with "rspec ./" and end with "<".
     """
-    regex = r"Failed examples:(.*)Randomized with seed"
-    match = re.search(regex, summary, re.DOTALL)
-    return match.group(1).strip().split("<br/>") if match else []
+    regex = r"(<br\/>rspec \.\/[^<]+)"
+    matches = re.findall(regex, summary, re.DOTALL)
+    return "".join(matches).split("<br/>") if matches else []
 
 
 def failed_tests(pipeline):
@@ -61,6 +120,38 @@ def failed_tests(pipeline):
                     failed_tests.append(FailedTest(*(test[6:].split(" # "))))
 
     return failed_tests
+
+
+def format_duration(duration):
+    """Given a duration in seconds, return a human readable string."""
+    if duration is None:
+        return "unknown"
+    return f"{duration // 60}m {duration % 60}s"
+
+
+def job_times(pipeline):
+    """Given a pipeline, return the time taken in for each job."""
+    job_times = []
+    for job in reversed(pipeline["jobs"]):
+        job_times.append(f"{job['name']}: {format_duration(job['duration'])}")
+
+    return "\n".join(job_times)
+
+
+def pipeline_status(pipeline):
+    """Given a pipeline, report the status of the pipeline taking the job stages into account."""
+    if is_lint(pipeline):
+        return f"lint {pipeline['status']}"
+    if pipeline["status"].lower() == "failed":
+        if pipeline_build_status(pipeline).lower() == "failed":
+            return "build failed"
+        elif any(failed_tests(pipeline)):
+            n = len(failed_tests(pipeline))
+            return f"tests failed ({n})"
+        elif pipeline_cleanup_status(pipeline).lower() == "failed":
+            return "cleanup failed"
+
+    return pipeline["status"]
 
 
 def extract_application_versions(html_summary):
@@ -83,8 +174,9 @@ def extract_application_versions(html_summary):
         if match:
             for line in match.group(1).strip().split("<br/>"):
                 if line.startswith("  "):
-                    app, version = line.strip().split(" ")
-                    versions[app.lower()] = version
+                    parts = line.strip().split(" ")
+                    app, version = parts[0].lower(), " ".join(parts[1:])
+                    versions[app] = version
 
     return versions
 
