@@ -7,5 +7,5 @@ set :public_folder, "#{__dir__}/static"
 
 get '/' do
   pipelines, flaky_tests = IntSuite.compile_pipelines(params)
-  erb :index, locals: { pipelines: pipelines, flaky_tests: flaky_tests }
+  erb :index, locals: { pipelines:, flaky_tests: }
 end

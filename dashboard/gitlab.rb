@@ -46,7 +46,7 @@ module Gitlab
     }
     parsed_response = nil
     begin
-      response = Net::HTTP.post(uri, { query: query }.to_json, headers)
+      response = Net::HTTP.post(uri, { query: }.to_json, headers)
       parsed_response = JSON.parse(response.body)
       if parsed_response['errors']
         logger.error(parsed_response['errors']) # Log the errors
