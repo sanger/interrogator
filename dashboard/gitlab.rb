@@ -52,7 +52,7 @@ module Gitlab
         logger.error(parsed_response['errors']) # Log the errors
         return []
       end
-    rescue Errno::ECONNREFUSED => e
+    rescue Errno::ECONNREFUSED, SocketError => e
       # could not connect to gitlab instance, most likely not on the VPN
       logger.error(e) # Log the errors
       return []
