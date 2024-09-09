@@ -67,6 +67,14 @@
         </a>
         <form id="filters" action="<%= url('/') %>" method="get">
           <div class="d-flex flex-wrap justify-content-end align-items-center mb-2">
+            <div class="form-floating mt-2 ms-2">
+              <select name="source" id="source" class="form-select">
+                <option value="all">All</option>
+                <option value="schedule">Schedule</option>
+                <option value="web">Web</option>
+              </select>
+              <label for="source">Source</label>
+            </div>
             <div class="form-floating mw-25 mt-2 ms-2">
               <select name="branch" id="branch" class="form-select">
                 <option value="all">All</option>
@@ -77,24 +85,6 @@
               <label for="branch">Branch</label>
             </div>
             <div class="form-floating mt-2 ms-2">
-              <select name="first" id="first" class="form-select">
-                <option value="5">5</option>
-                <option value="10">10</option>
-                <option value="20" selected>20</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-              </select>
-              <label for="first">Number</label>
-            </div>
-            <div class="form-floating mt-2 ms-2">
-              <select name="source" id="source" class="form-select">
-                <option value="all">All</option>
-                <option value="schedule">Schedule</option>
-                <option value="web">Web</option>
-              </select>
-              <label for="source">Source</label>
-            </div>
-            <div class="form-floating mt-2 ms-2">
               <select name="status" id="status" class="form-select">
                 <option value="all">All</option>
                 <option value="success">Success</option>
@@ -103,6 +93,16 @@
                 <option value="canceled">Canceled</option>
               </select>
               <label for="status">Status</label>
+            </div>
+            <div class="form-floating mt-2 ms-2">
+              <select name="first" id="first" class="form-select">
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="20" selected>20</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+              </select>
+              <label for="first">Number</label>
             </div>
             <button type="submit" class="btn btn-outline-primary mt-2 ms-2">Filter</button>
           </div>
