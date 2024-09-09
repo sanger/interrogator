@@ -19,6 +19,9 @@
         background-color: #9921e8;
         background-image: linear-gradient(315deg, #9921e8 0%, #5f72be 74%);
       }
+      .mw-25 {
+        max-width: 25%;
+      }
       .logo-image {
         height: 1em;
         vertical-align: middle; /* Align the image vertically with the text */
@@ -64,6 +67,15 @@
         </a>
         <form id="filters" action="<%= url('/') %>" method="get">
           <div class="d-flex flex-wrap justify-content-end align-items-center mb-2">
+            <div class="form-floating mw-25 mt-2 ms-2">
+              <select name="branch" id="branch" class="form-select">
+                <option value="all">All</option>
+                <% branches.each do |branch| %>
+                  <option value="<%= branch %>" %><%= branch %></option>
+                <% end %>
+              </select>
+              <label for="branch">Branch</label>
+            </div>
             <div class="form-floating mt-2 ms-2">
               <select name="first" id="first" class="form-select">
                 <option value="5">5</option>

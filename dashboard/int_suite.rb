@@ -83,4 +83,9 @@ module IntSuite
 
     [pipelines, flaky_tests]
   end
+
+  def self.branches(pipelines)
+    # Extract the branch names from the pipelines
+    pipelines.map { |pipeline| pipeline['ref'] }.uniq.sort
+  end
 end

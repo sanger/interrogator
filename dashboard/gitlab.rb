@@ -32,11 +32,13 @@ module Gitlab
     first = filters[:first] || 20
     source = filters[:source] || 'all'
     status = filters[:status] || 'all'
+    branch = filters[:branch] || 'all'
 
     template = File.read('dashboard/pipelines.gql')
     pipelines_filter = "first: #{first}"
     pipelines_filter += ", source: \"#{source}\"" if source && source != 'all'
     pipelines_filter += ", status: #{status.upcase}" if status && status != 'all'
+    pipelines_filter += ", ref: \"#{branch}\"" if branch && branch != 'all'
     query = template.gsub('$pipelines_filter', pipelines_filter)
 
     uri = URI("#{GITLAB_URL}api/graphql")

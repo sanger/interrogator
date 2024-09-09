@@ -7,5 +7,6 @@ set :public_folder, "#{__dir__}/static"
 
 get '/' do
   pipelines, flaky_tests = IntSuite.compile_pipelines(params)
-  erb :'index.html', locals: { pipelines:, flaky_tests: }
+  branches = IntSuite.branches(pipelines)
+  erb :'index.html', locals: { pipelines:, flaky_tests:, branches: }
 end
