@@ -23,6 +23,14 @@
                 trace {
                   htmlSummary(lastLines: 35)
                 }
+                artifacts {
+                  nodes {
+                    id
+                    name
+                    fileType
+                    downloadPath
+                  }
+                }
               }
             }
           }

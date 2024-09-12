@@ -11,12 +11,13 @@ GRAPHQL_TOKEN = File.read('gitlab.token').strip
 
 module Gitlab
   class FailedTest
-    attr_accessor :ref, :comment, :int_suite_version, :sequencescape_version, :limber_version, :is_flaky
+    attr_accessor :ref, :comment,:has_screenshot, :int_suite_version, :sequencescape_version, :limber_version, :is_flaky
 
-    def initialize(location, description, job_url)
+    def initialize(location, description, job_url, has_screenshot)
       @ref = location
       @comment = description
       @job_url = job_url
+      @has_screenshot = has_screenshot
       @int_suite_version = nil
       @sequencescape_version = nil
       @limber_version = nil
@@ -72,7 +73,11 @@ module Gitlab
       pipelines = data['data']['project']['pipelines']['edges'].map do |edge|
         # collapse edges and nodes
         node = edge['node']
-        node['jobs'] = node['jobs']['edges'].map { |job_edge| job_edge['node'] }
+        node['jobs'] = node['jobs']['edges'].map do |job_edge|
+          job_node = job_edge['node']
+          job_node['artifacts'] = job_node['artifacts']['nodes']
+          job_node
+        end
         node
       end
     rescue KeyError
@@ -114,7 +119,8 @@ module Gitlab
       extract_failed_tests(job['trace']['htmlSummary']).each do |test|
         location, description = *test[6..].split(' # ')
         job_url = "#{GITLAB_URL}#{job['webPath']}"
-        failed_tests << FailedTest.new(location, description, job_url) if test
+        has_screenshot = job['artifacts'].any? { |artifact| artifact['fileType'] == 'ARCHIVE' }
+        failed_tests << FailedTest.new(location, description, job_url, has_screenshot) if test
       end
     end
     failed_tests
