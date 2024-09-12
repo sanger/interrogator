@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'sinatra'
-require_relative 'integration_suite'
+require_relative 'lib/integration_suite'
 
 set :public_folder, "#{__dir__}/static"
 

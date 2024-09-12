@@ -45,7 +45,7 @@ module Gitlab
     status = filters[:status] || 'all'
     branch = filters[:branch] || 'all'
 
-    template = File.read('dashboard/pipelines.gql')
+    template = File.read('lib/pipelines.gql')
     pipelines_filter = "first: #{first}"
     pipelines_filter += ", source: \"#{source}\"" if source && source != 'all'
     pipelines_filter += ", status: #{status.upcase}" if status && status != 'all'
