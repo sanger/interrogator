@@ -4,6 +4,8 @@
 
 A visualisation tool for Integration Suite test runs.
 
+![Screenshot](docs/screenshot.png)
+
 ## Setup
 
 1. Install dependencies
