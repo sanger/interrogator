@@ -17,6 +17,7 @@ A visualisation tool for Integration Suite test runs.
    ```sh
    bundle exec rerun ruby dashboard/serve.rb
    ```
+1. Access the interface at http://localhost:4567
 
 ## Linting
 
