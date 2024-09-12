@@ -6,7 +6,9 @@ require_relative 'gitlab'
 
 UNKNOWN_VERSION = CGI.escapeHTML('<unknown>')
 
-module IntSuite
+# The IntegrationSuite module encapsulates all the logic related to the
+# Integration Suite, its pipelines, and interations between applications.
+module IntegrationSuite
   def self.group_pipelines(pipelines)
     # Group pipelines by int_suite, sequencescape, and limber versions.
     grouped_pipelines = Hash.new { |hash, key| hash[key] = [] }
@@ -18,8 +20,8 @@ module IntSuite
         pipeline['versions']['limber']
       ]
 
-      next if key.include?(UNKNOWN_VERSION)  # Skip pipelines with unknown versions
-      next unless pipeline['is_tested']      # Skip pipelines where tests were not executed
+      next if key.include?(UNKNOWN_VERSION) # Skip pipelines with unknown versions
+      next unless pipeline['tested?'] # Skip pipelines where tests were not executed
 
       grouped_pipelines[key] << pipeline
     end
@@ -52,7 +54,7 @@ module IntSuite
       pipeline['commit_abbr'] = pipeline['commitPath'].split('/').last[0, 6]
       pipeline['int_suite_version'] = "#{pipeline['ref']}@#{pipeline['commit_abbr']}"
       pipeline['overall_status'] = Gitlab.pipeline_status(pipeline)
-      pipeline['is_tested'] = Gitlab.is_tested(pipeline)
+      pipeline['tested?'] = Gitlab.tested?(pipeline)
       pipeline['failed_tests'] = Gitlab.failed_tests(pipeline)
       pipeline['job_times'] = Gitlab.job_times(pipeline)
 

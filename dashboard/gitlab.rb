@@ -6,12 +6,16 @@ require 'erb'
 require 'logger'
 
 GITLAB_URL = 'https://gitlab.internal.sanger.ac.uk'
-
 GRAPHQL_TOKEN = File.read('gitlab.token').strip
 
+# The Gitlab module serves as a namespace for all Gitlab-related actions and data.
+# It provides methods to query pipelines, extract information, and format data.
 module Gitlab
+  # The FailedTest class encapsulates all the information related to a failed
+  # test within a pipeline job.
   class FailedTest
-    attr_accessor :ref, :comment,:has_screenshot, :int_suite_version, :sequencescape_version, :limber_version, :is_flaky
+    attr_accessor :ref, :comment, :has_screenshot, :int_suite_version, :sequencescape_version, :limber_version,
+                  :is_flaky
 
     def initialize(location, description, job_url, has_screenshot)
       @ref = location
@@ -87,21 +91,21 @@ module Gitlab
     pipelines
   end
 
-  def self.is_lint(pipeline)
+  def self.lint?(pipeline)
     pipeline['jobs'].any? { |job| job['name'] == 'job_lint' }
   end
 
   def self.pipeline_build_status(pipeline)
-    job = pipeline['jobs'].find { |job| job['name'] == 'job_build' }
-    job ? job['status'] : 'No build'
+    build_job = pipeline['jobs'].find { |job| job['name'] == 'job_build' }
+    build_job ? build_job['status'] : 'No build'
   end
 
   def self.pipeline_cleanup_status(pipeline)
-    job = pipeline['jobs'].find { |job| job['name'] == 'job_cleanup' }
-    job ? job['status'] : 'No cleanup'
+    cleanup_job = pipeline['jobs'].find { |job| job['name'] == 'job_cleanup' }
+    cleanup_job ? cleanup_job['status'] : 'No cleanup'
   end
 
-  def self.is_tested(pipeline)
+  def self.tested?(pipeline)
     pipeline['jobs'].any? { |job| job['name'].start_with?('job_test') }
   end
 
@@ -137,7 +141,7 @@ module Gitlab
   end
 
   def self.pipeline_status(pipeline)
-    return "lint #{pipeline['status']}" if is_lint(pipeline)
+    return "lint #{pipeline['status']}" if lint?(pipeline)
 
     if pipeline['status'].downcase == 'failed'
       return 'build failed' if pipeline_build_status(pipeline).downcase == 'failed'
