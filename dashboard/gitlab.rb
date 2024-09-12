@@ -5,7 +5,7 @@ require 'json'
 require 'erb'
 require 'logger'
 
-GITLAB_URL = 'https://gitlab.internal.sanger.ac.uk/'
+GITLAB_URL = 'https://gitlab.internal.sanger.ac.uk'
 
 GRAPHQL_TOKEN = File.read('gitlab.token').strip
 
@@ -13,14 +13,20 @@ module Gitlab
   class FailedTest
     attr_accessor :ref, :comment, :int_suite_version, :sequencescape_version, :limber_version, :is_flaky
 
-    def initialize(ref, comment, int_suite_version = nil, sequencescape_version = nil, limber_version = nil,
-                   is_flaky = false)
-      @ref = ref
-      @comment = comment
-      @int_suite_version = int_suite_version
-      @sequencescape_version = sequencescape_version
-      @limber_version = limber_version
-      @is_flaky = is_flaky
+    def initialize(location, description, job_url)
+      @ref = location
+      @comment = description
+      @job_url = job_url
+      @int_suite_version = nil
+      @sequencescape_version = nil
+      @limber_version = nil
+      @is_flaky = false
+    end
+
+    def screenshot_path
+      artifacts_path = 'artifacts/file/tmp/capybara'
+      filename = @ref.sub('./spec/', '').sub('.rb', '').gsub(%r{[/:]}, '_').concat('.png')
+      "#{@job_url}/#{artifacts_path}/#{filename}"
     end
   end
 
@@ -41,7 +47,7 @@ module Gitlab
     pipelines_filter += ", ref: \"#{branch}\"" if branch && branch != 'all'
     query = template.gsub('$pipelines_filter', pipelines_filter)
 
-    uri = URI("#{GITLAB_URL}api/graphql")
+    uri = URI("#{GITLAB_URL}/api/graphql")
     headers = {
       'Authorization' => "Bearer #{GRAPHQL_TOKEN}",
       'Content-Type' => 'application/json'
@@ -106,7 +112,9 @@ module Gitlab
       next unless job['trace'] && job['trace']['htmlSummary'].include?('Failed examples:')
 
       extract_failed_tests(job['trace']['htmlSummary']).each do |test|
-        failed_tests << FailedTest.new(*test[6..].split(' # ')) if test
+        location, description = *test[6..].split(' # ')
+        job_url = "#{GITLAB_URL}#{job['webPath']}"
+        failed_tests << FailedTest.new(location, description, job_url) if test
       end
     end
     failed_tests

@@ -130,7 +130,7 @@
                 <div class="row">
                   <span class="col-12">
                     <%= pipeline['createdAt'].gsub('T', ' ')[0, 16] %>
-                    <a href="https://gitlab.internal.sanger.ac.uk/psd/integration-suite/-/pipelines/<%= pipeline['id'] %>"
+                    <a href="<%= gitlab_url %>/psd/integration-suite/-/pipelines/<%= pipeline['id'] %>"
                       target="_blank" class="underline ms-3"><%= pipeline['id'] %></a>
                     <span class="status-<%= pipeline['status'].downcase %> float-end ms-3">
                       <strong><%= pipeline['overall_status'].capitalize %></strong>
@@ -167,6 +167,7 @@
                     <li class='list-group-item py-1 small'>
                       <% if failed_test.is_flaky %><span class="badge bg-warning text-dark">Flaky</span><% end %>
                       <span class="font-monospace"><%= failed_test.ref %></span><span class="ms-2 text-secondary"><%= failed_test.comment %></span>
+                      <a href="<%= failed_test.screenshot_path %>" target="_blank" class="float-end"><i class="bi bi-window"></i></a>
                     </li>
                   <% end %>
                 </ul>
