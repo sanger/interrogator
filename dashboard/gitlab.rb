@@ -160,7 +160,7 @@ module Gitlab
         match[1].strip.split('<br/>').each do |line|
           next unless line.start_with?('  ')
 
-          parts = line.strip.split(' ')
+          parts = line.strip.split
           app = parts[0].downcase
           version = parts[1..].join(' ')
           versions[app] = version
