@@ -86,7 +86,7 @@
               <select name="branch" id="branch" class="form-select">
                 <option value="all">All</option>
                 <% branches.each do |branch| %>
-                  <option value="<%= branch %>" %><%= branch %></option>
+                  <option value="<%= branch %>"><%= branch %></option>
                 <% end %>
               </select>
               <label for="branch">Branch</label>
@@ -136,7 +136,7 @@
                       <strong><%= pipeline['overall_status'].capitalize %></strong>
                     </span>
                     <span class="text-secondary float-end" title="<%= pipeline['job_times'] %>">
-                      <%= pipeline['duration'] ? (pipeline['duration'] / 60 + 1) : '?' %> mins
+                      <%= pipeline['duration'] ? ((pipeline['duration'] / 60) + 1) : '?' %> mins
                     </span>
                   </span>
                 </div>
