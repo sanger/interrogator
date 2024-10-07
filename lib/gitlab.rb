@@ -14,14 +14,16 @@ module Gitlab
   # The FailedTest class encapsulates all the information related to a failed
   # test within a pipeline job.
   class FailedTest
-    attr_accessor :ref, :comment, :has_screenshot, :int_suite_version, :sequencescape_version, :limber_version,
-                  :is_flaky
+    attr_accessor :ref, :comment, :has_screenshot, :environment,
+                  :int_suite_version, :sequencescape_version,
+                  :limber_version, :is_flaky
 
     def initialize(location, description, job_url, has_screenshot)
       @ref = location
       @comment = description
       @job_url = job_url
       @has_screenshot = has_screenshot
+      @environment = nil
       @int_suite_version = nil
       @sequencescape_version = nil
       @limber_version = nil
