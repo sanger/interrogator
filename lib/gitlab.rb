@@ -154,10 +154,12 @@ module Gitlab
   def self.extract_application_versions(html_summary)
     versions = {}
     if html_summary.include?('Application versions')
-      regex = %r{Application versions deployed in \w+ environment:(.*)<br/><br/>}
+      regex = %r{Application versions deployed in (?<environment>\w+) environment:(?<versions>.*)<br/><br/>}
       match = html_summary.match(regex)
       if match
-        match[1].strip.split('<br/>').each do |line|
+        environment = match[:environment]
+        versions['environment'] = environment
+        match[:versions].strip.split('<br/>').each do |line|
           next unless line.start_with?('  ')
 
           parts = line.strip.split

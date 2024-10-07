@@ -61,6 +61,15 @@
       .status-running {
         color: var(--bs-info);
       }
+      .env-uat {
+        background-color: var(--bs-danger);
+      }
+      .env-training {
+        background-color: var(--bs-success);
+      }
+      .env-production {
+        background-color: var(--bs-primary);
+      }
     </style>
   </head>
   <body class="body-bg container-xl p-4">
@@ -128,7 +137,10 @@
             <div class="card mt-3">
               <div class="card-header">
                 <div class="row">
-                  <span class="col-12">
+                  <span class="col-2 col-lg-1">
+                    <span class="badge rounded-pill env-<%= pipeline['versions']['environment'] %> me-3"><%= pipeline['versions']['environment'] %></span>
+                  </span>
+                  <span class="col-10 col-lg-11">
                     <%= pipeline['createdAt'].gsub('T', ' ')[0, 16] %>
                     <a href="<%= gitlab_url %>/psd/integration-suite/-/pipelines/<%= pipeline['id'] %>"
                       target="_blank" class="underline ms-3"><%= pipeline['id'] %></a>
