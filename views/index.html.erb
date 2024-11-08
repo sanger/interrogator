@@ -35,16 +35,17 @@
       }
       .application-label {
         display: inline-block;
-        width: 1.4em;
+        padding-right: 0.2em;
         font-size: 0.9em;
         font-weight: bold;
       }
       .circle {
         display: inline-block;
-        width: 0.7em;
-        height: 0.7em;
+        width: 0.8em;
+        height: 0.8em;
+        vertical-align: middle;
         border-radius: 50%;
-        border: 1px solid #333;
+        border: 0.5px solid #aaa;
       }
       .status-success {
         color: var(--bs-success);
@@ -60,6 +61,15 @@
       }
       .status-running {
         color: var(--bs-info);
+      }
+      .env-uat {
+        background-color: var(--bs-danger);
+      }
+      .env-training {
+        background-color: var(--bs-success);
+      }
+      .env-production {
+        background-color: var(--bs-primary);
       }
     </style>
   </head>
@@ -127,7 +137,7 @@
           <% pipelines.each do |pipeline| %>
             <div class="card mt-3">
               <div class="card-header">
-                <div class="row">
+                <div class="row g-2">
                   <span class="col-12">
                     <%= pipeline['createdAt'].gsub('T', ' ')[0, 16] %>
                     <a href="<%= gitlab_url %>/psd/integration-suite/-/pipelines/<%= pipeline['id'] %>"
@@ -141,19 +151,24 @@
                   </span>
                 </div>
                 <div class="row">
-                  <span class="col-12 col-lg-3 offset-lg-1">
+                  <span class="col-12 col-lg-3">
+                    <span class="circle me-1 env-<%= pipeline['versions']['environment'] %>"></span>
+                    <span class="application-label" title="Integration Suite">ENV</span>
+                    <code><%= pipeline['versions']['environment'] %></code>
+                  </span>
+                  <span class="col-12 col-lg-3">
                     <span class="circle me-1"
                           style="background-color: #<%= pipeline['versions']['int_suite'][-6..] %>"></span>
                     <span class="application-label" title="Integration Suite">IS</span>
                     <code><%= pipeline['versions']['int_suite'] %></code>
                   </span>
-                  <span class="col-12 col-lg-4">
+                  <span class="col-12 col-lg-3">
                     <span class="circle me-1"
                           style="background-color: #<%= pipeline['versions']['sequencescape'][-6..] %>"></span>
                     <span class="application-label" title="Sequencescape">SS</span>
                     <code><%= pipeline['versions']['sequencescape'] %></code>
                   </span>
-                  <span class="col-12 col-lg-4">
+                  <span class="col-12 col-lg-3">
                     <span class="circle me-1"
                           style="background-color: #<%= pipeline['versions']['limber'][-6..] %>"></span>
                     <span class="application-label" title="Limber">LB</span>
@@ -165,7 +180,7 @@
                 <ul class='list-group list-group-flush'>
                   <% pipeline['failed_tests'].each do |failed_test| %>
                     <li class='list-group-item py-1 small'>
-                      <% if failed_test.is_flaky %><span class="badge bg-warning text-dark">Flaky</span><% end %>
+                      <% if failed_test.is_flaky %><span class="badge bg-warning text-dark">⚠ flaky</span><% end %>
                       <span class="font-monospace"><%= failed_test.ref %></span><span class="ms-2 text-secondary"><%= failed_test.comment %></span>
                       <% if failed_test.has_screenshot %>
                         <a href="<%= failed_test.screenshot_path %>" target="_blank" class="float-end"><i class="bi bi-window"></i></a>
