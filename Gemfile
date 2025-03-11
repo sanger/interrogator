@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 
 gem 'puma', '~> 6.4'
 gem 'rackup', '~> 2.1'
-gem 'sinatra', '~> 4.0'
+gem 'sinatra', '~> 4.1'
 
 group :development do
   gem 'erb_lint', require: false
