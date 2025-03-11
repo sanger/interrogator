@@ -4,23 +4,24 @@ require 'cgi'
 require 'set'
 require_relative 'gitlab'
 
-UNKNOWN_VERSION = CGI.escapeHTML('<unknown>')
+UNKNOWN = CGI.escapeHTML('<unknown>')
 
 # The IntegrationSuite module encapsulates all the logic related to the
 # Integration Suite, its pipelines, and interations between applications.
 module IntegrationSuite
   def self.group_pipelines(pipelines)
-    # Group pipelines by int_suite, sequencescape, and limber versions.
+    # Group pipelines by environment, int_suite, sequencescape, and limber versions.
     grouped_pipelines = Hash.new { |hash, key| hash[key] = [] }
 
     pipelines.each do |pipeline|
       key = [
+        pipeline['versions']['environment'],
         pipeline['versions']['int_suite'],
         pipeline['versions']['sequencescape'],
         pipeline['versions']['limber']
       ]
 
-      next if key.include?(UNKNOWN_VERSION) # Skip pipelines with unknown versions
+      next if key.include?(UNKNOWN) # Skip pipelines with unknown versions
       next unless pipeline['tested?'] # Skip pipelines where tests were not executed
 
       grouped_pipelines[key] << pipeline
@@ -61,15 +62,17 @@ module IntegrationSuite
       # Get the application versions
       gitlab_versions = Gitlab.application_versions(pipeline) || {}
       default_versions = {
+        'environment' => '',
         'int_suite' => pipeline['int_suite_version'],
-        'sequencescape' => UNKNOWN_VERSION,
-        'limber' => UNKNOWN_VERSION
+        'sequencescape' => UNKNOWN,
+        'limber' => UNKNOWN
       }
       versions = default_versions.merge(gitlab_versions)
       pipeline['versions'] = versions
 
       # Apply the versions to the failed tests for analysis
       pipeline['failed_tests'].each do |failed_test|
+        failed_test.environment = versions['environment']
         failed_test.int_suite_version = versions['int_suite']
         failed_test.sequencescape_version = versions['sequencescape']
         failed_test.limber_version = versions['limber']

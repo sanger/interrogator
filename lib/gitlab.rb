@@ -14,14 +14,16 @@ module Gitlab
   # The FailedTest class encapsulates all the information related to a failed
   # test within a pipeline job.
   class FailedTest
-    attr_accessor :ref, :comment, :has_screenshot, :int_suite_version, :sequencescape_version, :limber_version,
-                  :is_flaky
+    attr_accessor :ref, :comment, :has_screenshot, :environment,
+                  :int_suite_version, :sequencescape_version,
+                  :limber_version, :is_flaky
 
     def initialize(location, description, job_url, has_screenshot)
       @ref = location
       @comment = description
       @job_url = job_url
       @has_screenshot = has_screenshot
+      @environment = nil
       @int_suite_version = nil
       @sequencescape_version = nil
       @limber_version = nil
@@ -154,10 +156,12 @@ module Gitlab
   def self.extract_application_versions(html_summary)
     versions = {}
     if html_summary.include?('Application versions')
-      regex = %r{Application versions deployed in \w+ environment:(.*)<br/><br/>}
+      regex = %r{Application versions deployed in (?<environment>\w+) environment:(?<versions>.*)<br/><br/>}
       match = html_summary.match(regex)
       if match
-        match[1].strip.split('<br/>').each do |line|
+        environment = match[:environment]
+        versions['environment'] = environment
+        match[:versions].strip.split('<br/>').each do |line|
           next unless line.start_with?('  ')
 
           parts = line.strip.split
