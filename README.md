@@ -23,5 +23,5 @@ A visualisation tool for Integration Suite test runs.
 
 ```sh
 bundle exec rubocop -a
-bundle exec erblint --lint-all -a
+bundle exec erb_lint --lint-all -a
 ```
