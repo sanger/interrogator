@@ -6,7 +6,15 @@ require 'erb'
 require 'logger'
 
 GITLAB_URL = 'https://gitlab.internal.sanger.ac.uk'
-GRAPHQL_TOKEN = File.read('gitlab.token').strip
+
+# Check if the token file exists and read it, otherwise log a warning
+if File.exist?('gitlab.token')
+  GRAPHQL_TOKEN = File.read('gitlab.token').strip
+  raise 'GRAPHQL_TOKEN is empty. Please ensure the token file contains a valid token.' if GRAPHQL_TOKEN.empty?
+else
+  warn 'Warning: gitlab.token file not found, cannot fetch test results. Please see README for how to acquire a token.'
+  GRAPHQL_TOKEN = nil
+end
 
 # The Gitlab module serves as a namespace for all Gitlab-related actions and data.
 # It provides methods to query pipelines, extract information, and format data.
