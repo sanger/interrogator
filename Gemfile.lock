@@ -18,7 +18,7 @@ GEM
       minitest (>= 5.1)
       securerandom (>= 0.3)
       tzinfo (~> 2.0, >= 2.0.5)
-    ast (2.4.2)
+    ast (2.4.3)
     base64 (0.2.0)
     better_html (2.1.1)
       actionview (>= 6.0)
@@ -50,8 +50,9 @@ GEM
     ffi (1.17.0-arm64-darwin)
     i18n (1.14.5)
       concurrent-ruby (~> 1.0)
-    json (2.7.2)
-    language_server-protocol (3.17.0.3)
+    json (2.10.2)
+    language_server-protocol (3.17.0.4)
+    lint_roller (1.1.0)
     listen (3.9.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
@@ -70,9 +71,10 @@ GEM
     nokogiri (1.18.3-arm64-darwin)
       racc (~> 1.4)
     parallel (1.26.3)
-    parser (3.3.5.0)
+    parser (3.3.7.4)
       ast (~> 2.4.1)
       racc
+    prism (1.4.0)
     puma (6.4.3)
       nio4r (~> 2.0)
     racc (1.8.1)
@@ -97,7 +99,7 @@ GEM
     rb-fsevent (0.11.2)
     rb-inotify (0.11.1)
       ffi (~> 1.0)
-    regexp_parser (2.9.2)
+    regexp_parser (2.10.0)
     rerun (0.14.0)
       listen (~> 3.0)
     rexml (3.3.9)
@@ -114,18 +116,26 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
     rspec-support (3.13.1)
-    rubocop (1.66.1)
+    rubocop (1.75.2)
       json (~> 2.3)
-      language_server-protocol (>= 3.17.0)
+      language_server-protocol (~> 3.17.0.2)
+      lint_roller (~> 1.1.0)
       parallel (~> 1.10)
       parser (>= 3.3.0.2)
       rainbow (>= 2.2.2, < 4.0)
-      regexp_parser (>= 2.4, < 3.0)
-      rubocop-ast (>= 1.32.2, < 2.0)
+      regexp_parser (>= 2.9.3, < 3.0)
+      rubocop-ast (>= 1.44.0, < 2.0)
       ruby-progressbar (~> 1.7)
-      unicode-display_width (>= 2.4.0, < 3.0)
-    rubocop-ast (1.32.3)
-      parser (>= 3.3.1.0)
+      unicode-display_width (>= 2.4.0, < 4.0)
+    rubocop-ast (1.44.0)
+      parser (>= 3.3.7.2)
+      prism (~> 1.4)
+    rubocop-factory_bot (2.27.1)
+      lint_roller (~> 1.1)
+      rubocop (~> 1.72, >= 1.72.1)
+    rubocop-rspec (3.5.0)
+      lint_roller (~> 1.1)
+      rubocop (~> 1.72, >= 1.72.1)
     ruby-progressbar (1.13.0)
     ruby2_keywords (0.0.5)
     securerandom (0.3.1)
@@ -140,7 +150,9 @@ GEM
     tilt (2.4.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
-    unicode-display_width (2.5.0)
+    unicode-display_width (3.1.4)
+      unicode-emoji (~> 4.0, >= 4.0.4)
+    unicode-emoji (4.0.4)
     webrick (1.8.2)
 
 PLATFORMS
@@ -149,15 +161,17 @@ PLATFORMS
 
 DEPENDENCIES
   erb_lint
-  factory_bot (~> 6.2)
+  factory_bot
   faker (~> 2.18)
   puma (~> 6.4)
   rackup (~> 2.1)
   rb-fsevent (~> 0.10)
   rerun (~> 0.14)
   rexml
-  rspec (~> 3.10)
-  rubocop (~> 1.66)
+  rspec
+  rubocop
+  rubocop-factory_bot
+  rubocop-rspec
   sinatra (~> 4.1)
 
 BUNDLED WITH
