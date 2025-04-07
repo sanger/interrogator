@@ -1,6 +1,7 @@
 inherit_from: .rubocop_todo.yml
 plugins:
   - rubocop-factory_bot
+  - rubocop-rspec
 
 
 # The behavior of RuboCop can be controlled via the .rubocop.yml
