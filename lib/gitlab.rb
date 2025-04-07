@@ -35,6 +35,39 @@ module Gitlab
       filename = @ref.sub('./spec/', '').sub('.rb', '').gsub(%r{[/:]}, '_').concat('.png')
       "#{@job_url}/#{artifacts_path}/#{filename}"
     end
+
+    # Create a unique identifier for this object for comparison to other similar objects
+    def key_attributes
+      {
+        ref: @ref,
+        environment: @environment,
+        int_suite_version: @int_suite_version,
+        sequencescape_version: @sequencescape_version,
+        limber_version: @limber_version
+      }
+    end
+
+    # Use key attribute for unique identification
+    def eql?(other)
+      other.is_a?(FailedTest) && key_attributes == other.key_attributes
+    end
+
+    # Override hash to ensure objects with the same key attributes have the same hash
+    def hash
+      key_attributes.hash
+    end
+
+    def to_s
+      shown_attributes = {
+        ref: @ref,
+        environment: @environment,
+        int_suite_version: @int_suite_version,
+        sequencescape_version: @sequencescape_version,
+        limber_version: @limber_version,
+        is_flaky: @is_flaky
+      }
+      "FailedTest(#{shown_attributes.map { |key, value| "#{key}: #{value}" }.join(', ')})"
+    end
   end
 
   def self.query_pipelines(**filters)

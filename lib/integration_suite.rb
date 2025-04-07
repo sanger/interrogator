@@ -39,7 +39,9 @@ module IntegrationSuite
     failed_test_sets = pipelines.map { |p| p['failed_tests'].to_set }
 
     # Find the difference of the failed tests
-    flaky_test_set = failed_test_sets.reduce(:|) - failed_test_sets.reduce(:&)
+    all_unique_failures = failed_test_sets.reduce(:|)
+    common_failures = failed_test_sets.reduce(:&)
+    flaky_test_set = all_unique_failures - common_failures
 
     flaky_test_set.each { |flaky_test| flaky_test.is_flaky = true }
 
@@ -62,7 +64,7 @@ module IntegrationSuite
       # Get the application versions
       gitlab_versions = Gitlab.application_versions(pipeline) || {}
       default_versions = {
-        'environment' => '',
+        'environment' => UNKNOWN,
         'int_suite' => pipeline['int_suite_version'],
         'sequencescape' => UNKNOWN,
         'limber' => UNKNOWN
