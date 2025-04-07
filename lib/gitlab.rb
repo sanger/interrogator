@@ -6,7 +6,15 @@ require 'erb'
 require 'logger'
 
 GITLAB_URL = 'https://gitlab.internal.sanger.ac.uk'
-GRAPHQL_TOKEN = File.read('gitlab.token').strip
+
+# Check if the token file exists and read it, otherwise log a warning
+if File.exist?('gitlab.token')
+  GRAPHQL_TOKEN = File.read('gitlab.token').strip
+  raise 'GRAPHQL_TOKEN is empty. Please ensure the token file contains a valid token.' if GRAPHQL_TOKEN.empty?
+else
+  warn 'Warning: gitlab.token file not found, cannot fetch test results. Please see README for how to acquire a token.'
+  GRAPHQL_TOKEN = nil
+end
 
 # The Gitlab module serves as a namespace for all Gitlab-related actions and data.
 # It provides methods to query pipelines, extract information, and format data.
@@ -34,6 +42,39 @@ module Gitlab
       artifacts_path = 'artifacts/file/tmp/capybara'
       filename = @ref.sub('./spec/', '').sub('.rb', '').gsub(%r{[/:]}, '_').concat('.png')
       "#{@job_url}/#{artifacts_path}/#{filename}"
+    end
+
+    # Create a unique identifier for this object for comparison to other similar objects
+    def key_attributes
+      {
+        ref: @ref,
+        environment: @environment,
+        int_suite_version: @int_suite_version,
+        sequencescape_version: @sequencescape_version,
+        limber_version: @limber_version
+      }
+    end
+
+    # Use key attribute for unique identification
+    def eql?(other)
+      other.is_a?(FailedTest) && key_attributes == other.key_attributes
+    end
+
+    # Override hash to ensure objects with the same key attributes have the same hash
+    def hash
+      key_attributes.hash
+    end
+
+    def to_s
+      shown_attributes = {
+        ref: @ref,
+        environment: @environment,
+        int_suite_version: @int_suite_version,
+        sequencescape_version: @sequencescape_version,
+        limber_version: @limber_version,
+        is_flaky: @is_flaky
+      }
+      "FailedTest(#{shown_attributes.map { |key, value| "#{key}: #{value}" }.join(', ')})"
     end
   end
 
