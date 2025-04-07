@@ -12,7 +12,6 @@ group :development do
   gem 'faker', '~> 2.18', require: false
   gem 'rb-fsevent', '~> 0.10', require: false
   gem 'rerun', '~> 0.14', require: false
-  gem 'rexml', require: false # Required by erb_lint, see https://github.com/Shopify/erb_lint/issues/371
   gem 'rubocop', require: false
   gem 'rubocop-factory_bot', require: false
 end
