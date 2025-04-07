@@ -33,6 +33,7 @@ GEM
     connection_pool (2.4.1)
     crass (1.0.6)
     diff-lcs (1.5.1)
+    docile (1.4.1)
     drb (2.2.1)
     erb_lint (0.6.0)
       activesupport
@@ -139,6 +140,13 @@ GEM
     ruby-progressbar (1.13.0)
     ruby2_keywords (0.0.5)
     securerandom (0.3.1)
+    simplecov (0.22.0)
+      docile (~> 1.1)
+      simplecov-html (~> 0.11)
+      simplecov_json_formatter (~> 0.1)
+    simplecov-html (0.13.1)
+    simplecov-lcov (0.8.0)
+    simplecov_json_formatter (0.1.4)
     sinatra (4.1.0)
       logger (>= 1.6.0)
       mustermann (~> 3.0)
@@ -172,6 +180,8 @@ DEPENDENCIES
   rubocop
   rubocop-factory_bot
   rubocop-rspec
+  simplecov
+  simplecov-lcov
   sinatra (~> 4.1)
 
 BUNDLED WITH

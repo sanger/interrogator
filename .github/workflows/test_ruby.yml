@@ -1,0 +1,32 @@
+name: Ruby RSpec Tests
+
+on:
+  # Warning: changing run conditions could prevent coverage report in PR, see codecov.yml for `after_n_builds`
+  - push
+  - pull_request
+
+env:
+  BUNDLE_WITHOUT: "development lint"
+
+jobs:
+  ruby_test:
+    runs-on: ubuntu-latest
+    env:
+      TZ: Europe/London
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true # Runs bundle install and caches gems. See the ruby_test.yml example if you need more control over bundler.
+      - name: Run rspec
+        run: bundle exec rspec
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5.4.0
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          flags: ruby,${{ github.event_name }}
+          fail_ci_if_error: true
+          disable_search: true
+          files: ${{ github.workspace }}/lcov.info
