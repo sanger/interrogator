@@ -10,7 +10,6 @@ group :development do
   gem 'erb_lint', require: false
   gem 'rb-fsevent', '~> 0.10', require: false
   gem 'rerun', '~> 0.14', require: false
-  gem 'rexml', require: false # Required by erb_lint, see https://github.com/Shopify/erb_lint/issues/371
   gem 'rubocop', require: false
   gem 'rubocop-factory_bot', require: false
   gem 'rubocop-rspec', require: false
