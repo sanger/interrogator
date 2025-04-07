@@ -26,7 +26,6 @@ jobs:
         uses: codecov/codecov-action@v5.4.0
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          flags: ruby,${{ github.event_name }}
           fail_ci_if_error: true
           disable_search: true
-          files: ${{ github.workspace }}/lcov.info
+          files: ${{ github.workspace }}/coverage/lcov.info
