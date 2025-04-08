@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'cgi'
-require 'set'
 require_relative 'gitlab'
 
 UNKNOWN = CGI.escapeHTML('<unknown>')
