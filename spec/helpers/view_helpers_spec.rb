@@ -7,7 +7,7 @@ RSpec.describe ViewHelpers do
   let(:helper) { Class.new { extend ViewHelpers } }
 
   describe '#pipeline_duration_minutes' do
-    let(:pipeline) { build(:pipeline, duration: 23 * 60 + 30) }
+    let(:pipeline) { build(:pipeline, duration: (23 * 60) + 30) }
 
     context 'when duration is nil' do
       let(:pipeline) { build(:pipeline, duration: nil) }

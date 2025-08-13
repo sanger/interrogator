@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# Provides utility methods for formatting and extracting
+# pipeline and job information for use in view templates.
 module ViewHelpers
   # Returns the pipeline duration in minutes, rounded up, or '?' if not available
   def pipeline_duration_minutes(pipeline)
