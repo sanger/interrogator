@@ -188,6 +188,10 @@
                     </li>
                   <% end %>
                 </ul>
+              <% elsif pipeline['overall_status'].downcase == "success" %>
+                <div class="card-body p-1 text-center text-success">
+                  All tests passed
+                </div>
               <% end %>
             </div>
           <% end %>
