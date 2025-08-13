@@ -2,8 +2,11 @@
 
 require 'sinatra'
 require_relative 'lib/integration_suite'
+require_relative 'helpers/view_helpers'
 
 set :public_folder, "#{__dir__}/static"
+
+helpers ViewHelpers
 
 get '/' do
   pipelines, flaky_tests = IntegrationSuite.compile_pipelines(params)

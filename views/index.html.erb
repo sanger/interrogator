@@ -146,7 +146,7 @@
                       <strong><%= pipeline['overall_status'].capitalize %></strong>
                     </span>
                     <span class="text-secondary float-end" title="<%= pipeline['job_times'] %>">
-                      <%= pipeline['duration'] ? ((pipeline['duration'] / 60) + 1) : '?' %> mins
+                      <%= pipeline_duration_minutes(pipeline) %> mins
                     </span>
                   </span>
                 </div>
