@@ -145,8 +145,12 @@
                     <span class="status-<%= pipeline['status'].downcase %> float-end ms-3">
                       <strong><%= pipeline['overall_status'].capitalize %></strong>
                     </span>
-                    <span class="text-secondary float-end" title="<%= pipeline['job_times'] %>">
-                      <%= pipeline['duration'] ? ((pipeline['duration'] / 60) + 1) : '?' %> mins
+                    <span class="text-secondary float-end" title="<%= "test-pipeline mins\n\n#{pipeline['job_times']}" %>">
+                      <% if test_duration_minutes(pipeline) %>
+                        <%= test_duration_minutes(pipeline) %>-<%= pipeline_duration_minutes(pipeline) %> mins
+                      <% else %>
+                        <%= pipeline_duration_minutes(pipeline) %> mins
+                      <% end %>
                     </span>
                   </span>
                 </div>
