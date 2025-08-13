@@ -5,6 +5,14 @@ module ViewHelpers
   def pipeline_duration_minutes(pipeline)
     return '?' unless pipeline['duration']
 
-    ((pipeline['duration'] / 60) + 1)
+    (pipeline['duration'] / 60.0).ceil.to_i
+  end
+
+  # Returns the test duration in minutes, or nil if not available
+  def test_duration_minutes(pipeline)
+    pipeline['jobs']
+      .select { |job| job['name'].include?('test') && job['duration'] }
+      .map { |job| (job['duration'] / 60.0).ceil.to_i }
+      .max
   end
 end
